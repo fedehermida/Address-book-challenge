@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AddressBook {
+  id    Int     @id @default(autoincrement())
+  userName  String
+  active Boolean? @default(true)
+  addressBookEntries AddressBookEntries[]
+}
+
+model AddressBookEntries {
+  id        Int     @id @default(autoincrement())
+  address String
+  firstName String
+  lastName String
+  phoneNumber String 
+  homeNumber     String?
+  email String
+  createdAt DateTime @default(now())
+  addressBook    AddressBook   @relation(fields: [addressBookId], references: [id], onDelete: Cascade)
+  addressBookId  Int
+}

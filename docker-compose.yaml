@@ -1,0 +1,62 @@
+services:
+  addressbook:
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    container_name: addressbook
+    build:
+      context: .
+      target: development
+    volumes:
+      - './src/:/workspace/src'
+      - './node_modules:/workspace/node_modules'
+    command: >
+      sh -c "
+        npm run migrate:docker
+        npm run start:debug"
+    ports:
+      - 4001:8080
+      - 9001:9229
+    environment:
+      - DATABASE_URL="postgresql://postgres:postgres@postgres/postgres?schema=public"
+      - ENVIRONMENT=docker
+      - PORT=8080
+    networks:
+      - jointly-api-network
+
+  postgres:
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    image: postgres
+    restart: always
+    user: postgres
+    environment:
+      - DATABASE_HOST=127.0.0.1
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - 5432:5432
+    networks:
+      - jointly-api-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - 4781:80
+    networks:
+      - jointly-api-network
+    depends_on:
+      - postgres
+
+networks:
+  jointly-api-network:
+    driver: bridge

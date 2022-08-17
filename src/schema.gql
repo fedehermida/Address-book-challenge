@@ -1,0 +1,102 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AddressBookEntityObject {
+  id: Int!
+  address: String!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+  homeNumber: String
+  email: String
+  createdAt: DateTime
+  addressBookId: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type PaginatedAddressBookEntityObject {
+  data: [AddressBookEntityObject!]!
+  total: Int!
+  skip: Int!
+  take: Int!
+}
+
+type AddressBookObject {
+  id: Int!
+  userName: String!
+  active: Boolean!
+  addressBookEntities(offset: Int = 0, limit: Int = 10): PaginatedAddressBookEntityObject
+}
+
+type PaginatedAddressBookObject {
+  data: [AddressBookObject!]!
+  total: Int!
+  skip: Int!
+  take: Int!
+}
+
+type Query {
+  getAddressBookById(id: Int!): AddressBookObject!
+  searchAddressBook(userName: String, active: Boolean = true, offset: Int = 0, limit: Int = 10): PaginatedAddressBookObject!
+  getAddressBookEntityById(id: Int!): AddressBookEntityObject!
+  searchAddressBookEntites(input: SearchAddressBookEntity!, offset: Int = 0, limit: Int = 10): PaginatedAddressBookEntityObject!
+}
+
+input SearchAddressBookEntity {
+  address: String
+  firstName: String
+  lastName: String
+  phoneNumber: String
+  homeNumber: String
+  email: String
+  addressBookId: Int
+  id: Int!
+}
+
+type Mutation {
+  createAddressBook(input: AddressBookInput!): AddressBookObject!
+  updateAddressBook(id: Float!, input: AddressBookInput!): AddressBookObject!
+  deleteAddressBook(id: Float!): AddressBookObject!
+  createAddressBookEntity(input: AddressBookEntityInput!): AddressBookEntityObject!
+  updateAddressBookEntity(id: Float!, input: UpdateAddressBookEntityInput!): AddressBookEntityObject!
+  deleteAddressBookEntity(id: Float!): AddressBookEntityObject!
+}
+
+input AddressBookInput {
+  userName: String!
+  addressBookEntities: [PartialAddressBookEntityInput!]
+}
+
+input PartialAddressBookEntityInput {
+  address: String!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+  homeNumber: String
+  email: String
+}
+
+input AddressBookEntityInput {
+  address: String!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+  homeNumber: String
+  email: String
+  addressBookId: Int!
+}
+
+input UpdateAddressBookEntityInput {
+  address: String
+  firstName: String
+  lastName: String
+  phoneNumber: String
+  homeNumber: String
+  email: String
+  addressBookId: Int
+}
